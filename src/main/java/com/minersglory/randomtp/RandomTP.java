@@ -39,9 +39,14 @@ public class RandomTP extends JavaPlugin {
 
                 Location destination = null;
 
-                int x = random.nextInt(100) + 1;
+                int Min = 100;
+                int Max = 9999;
+
+
+                // TODO: ACTUALLY GET THIS VALUES FROM A CONFIG FILE
+                int x = random.nextInt(Max-Min + Min);
                 int y = 150;
-                int z = random.nextInt(100) + 1;
+                int z = random.nextInt(Max-Min + Min);
 
                 boolean isLandMass = false;
                 while (!isLandMass) {
