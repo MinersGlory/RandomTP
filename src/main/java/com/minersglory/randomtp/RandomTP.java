@@ -10,6 +10,7 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.HashMap;
 import java.util.Random;
 import java.util.logging.Logger;
 
@@ -17,6 +18,13 @@ public class RandomTP extends JavaPlugin {
 
     public final Logger logger = Logger.getLogger("Minecraft");
     public Permission permission = new Permission("wild");
+
+    public HashMap<String, Long> cooldowns = new HashMap<String, Long>();
+    public long timeleft;
+    // TODO: ACTUALLY GET THIS VALUE FROM A CONFIG FILE
+    int cooldownDuration = 60;
+    public long cooldowntime = cooldownDuration * 1000;
+
 
     public void onEnable() {
 
@@ -30,36 +38,50 @@ public class RandomTP extends JavaPlugin {
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+
+
         if ((cmd.getName().equalsIgnoreCase("wild")) && ((sender instanceof Player))) {
+
             Player player = (Player) sender;
+            String Sender = player.getName();
+
             if (player.hasPermission("wild.use")) {
-                Location originalLocation = player.getLocation();
 
-                Random random = new Random();
+                if (this.cooldowns.containsKey(Sender) && System.currentTimeMillis() - cooldowns.get(Sender) <= cooldowntime) {
+                    player.sendMessage(ChatColor.GRAY + "Please wait another " + Math.round((System.currentTimeMillis() - cooldowns.get(Sender)) / 1000) + ChatColor.GRAY + " seconds before trying again.");
+                } else {
+                    Location originalLocation = player.getLocation();
 
-                Location destination = null;
+                    Random random = new Random();
 
-                int Min = 100;
-                int Max = 9999;
+                    Location destination = null;
+
+                    int Min = 100;
+                    int Max = 9999;
 
 
-                // TODO: ACTUALLY GET THIS VALUES FROM A CONFIG FILE
-                int x = random.nextInt(Max-Min + Min);
-                int y = 150;
-                int z = random.nextInt(Max-Min + Min);
+                    // TODO: ACTUALLY GET THIS VALUES FROM A CONFIG FILE
+                    int x = random.nextInt(Max - Min + Min);
+                    int y = 150;
+                    int z = random.nextInt(Max - Min + Min);
 
-                boolean isLandMass = false;
-                while (!isLandMass) {
-                    destination = new Location(player.getWorld(), x, y, z);
-                    if (destination.getBlock().getType() != Material.AIR) {
-                        isLandMass = true;
-                    } else {
-                        y--;
+                    boolean isLandMass = false;
+                    while (!isLandMass) {
+                        destination = new Location(player.getWorld(), x, y, z);
+                        if (destination.getBlock().getType() != Material.AIR) {
+                            isLandMass = true;
+                        } else {
+                            y--;
+                        }
                     }
-                }
-                player.teleport(new Location(player.getWorld(), destination.getX(), destination.getY() + 1.0D, destination.getZ()));
+                    player.teleport(new Location(player.getWorld(), destination.getX(), destination.getY() + 1.0D, destination.getZ()));
 
-                player.sendMessage(ChatColor.GREEN + "You have been teleported " + (int) destination.distance(originalLocation) + " blocks away!");
+                    player.sendMessage(ChatColor.GREEN + "You have been teleported " + (int) destination.distance(originalLocation) + " blocks away!");
+
+
+                    cooldowns.put(Sender, System.currentTimeMillis());
+                }
+
             } else {
                 player.sendMessage(ChatColor.DARK_RED + "You don't have permission to use this command!");
             }
