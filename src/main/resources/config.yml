@@ -1,0 +1,5 @@
+worlds:
+  world:
+    range:
+      max: 9999
+      min: 100
