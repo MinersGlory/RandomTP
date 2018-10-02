@@ -1,5 +1,6 @@
 package com.minersglory.randomtp.commands;
 
+import com.minersglory.randomtp.RandomTP;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -22,6 +23,7 @@ public class Wild implements CommandExecutor {
     int cooldownDuration = 60;
     public long cooldowntime = cooldownDuration * 1000;
 
+    public RandomTP plugin = new RandomTP();
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -43,8 +45,8 @@ public class Wild implements CommandExecutor {
 
                     Location destination = null;
 
-                    int Min = 100;
-                    int Max = 9999;
+                    int Max = plugin.getConfig().getInt("worlds.world.range.max");
+                    int Min = plugin.getConfig().getInt("worlds.world.range.min");
 
 
                     // TODO: ACTUALLY GET THIS VALUES FROM A CONFIG FILE
