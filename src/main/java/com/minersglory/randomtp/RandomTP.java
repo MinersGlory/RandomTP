@@ -1,5 +1,6 @@
 package com.minersglory.randomtp;
 
+import com.minersglory.randomtp.commands.Wild;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,78 +17,18 @@ import java.util.logging.Logger;
 
 public class RandomTP extends JavaPlugin {
 
-    public final Logger logger = Logger.getLogger("Minecraft");
-    public Permission permission = new Permission("wild");
+    public final Logger logger = getLogger();
 
-    public HashMap<String, Long> cooldowns = new HashMap<String, Long>();
-    public long timeleft;
-    // TODO: ACTUALLY GET THIS VALUE FROM A CONFIG FILE
-    int cooldownDuration = 60;
-    public long cooldowntime = cooldownDuration * 1000;
 
 
     public void onEnable() {
-
-        this.logger.info("RandomTP has been enabled.");
-        PluginManager pm = getServer().getPluginManager();
-        pm.addPermission(this.permission);
+        logger.info("RandomTP has been enabled.");
+        this.getCommand("wild").setExecutor(new Wild());
     }
 
     public void onDisable() {
-        this.logger.info("RandomTP has been disabled.");
+        logger.info("RandomTP has been disabled.");
     }
 
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-
-
-        if ((cmd.getName().equalsIgnoreCase("wild")) && ((sender instanceof Player))) {
-
-            Player player = (Player) sender;
-            String Sender = player.getName();
-
-            if (player.hasPermission("wild.use")) {
-
-                if (this.cooldowns.containsKey(Sender) && System.currentTimeMillis() - cooldowns.get(Sender) <= cooldowntime) {
-                    player.sendMessage(ChatColor.GRAY + "Please wait another " + Math.round((System.currentTimeMillis() - cooldowns.get(Sender)) / 1000) + ChatColor.GRAY + " seconds before trying again.");
-                } else {
-                    Location originalLocation = player.getLocation();
-
-                    Random random = new Random();
-
-                    Location destination = null;
-
-                    int Min = 100;
-                    int Max = 9999;
-
-
-                    // TODO: ACTUALLY GET THIS VALUES FROM A CONFIG FILE
-                    int x = random.nextInt(Max - Min + Min);
-                    int y = 150;
-                    int z = random.nextInt(Max - Min + Min);
-
-                    boolean isLandMass = false;
-                    while (!isLandMass) {
-                        destination = new Location(player.getWorld(), x, y, z);
-                        if (destination.getBlock().getType() != Material.AIR) {
-                            isLandMass = true;
-                        } else {
-                            y--;
-                        }
-                    }
-                    player.teleport(new Location(player.getWorld(), destination.getX(), destination.getY() + 1.0D, destination.getZ()));
-
-                    player.sendMessage(ChatColor.GREEN + "You have been teleported " + (int) destination.distance(originalLocation) + " blocks away!");
-
-
-                    cooldowns.put(Sender, System.currentTimeMillis());
-                }
-
-            } else {
-                player.sendMessage(ChatColor.DARK_RED + "You don't have permission to use this command!");
-            }
-            return true;
-        }
-        return false;
-    }
 }
 
