@@ -6,7 +6,7 @@
 
     <groupId>com.minersglory</groupId>
     <artifactId>randomtp</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.1</version>
 
     <!-- maven-compiler-plugin -->
     <build>
@@ -21,6 +21,13 @@
                 </configuration>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory> <!-- (your resources folder location) -->
+                <filtering>true
+                </filtering> <!-- this is the important part, it's what replaces, filters, all placeholders in the resources folder (such as ${project.version} in plugin.yml) -->
+            </resource>
+        </resources>
     </build>
 
     <repositories>

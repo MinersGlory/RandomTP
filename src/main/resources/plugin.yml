@@ -1,6 +1,6 @@
 name: RandomTP
 main: com.minersglory.randomtp.RandomTP
-version: 1.1
+version: ${project.version}
 commands:
   wild:
     description: Use /wild to be randomly teleported in the wilderness
