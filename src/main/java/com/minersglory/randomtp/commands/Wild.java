@@ -45,14 +45,14 @@ public class Wild implements CommandExecutor {
 
                     Location destination = null;
 
-                    int Max = plugin.getConfig().getInt("range.max");
-                    int Min = plugin.getConfig().getInt("range.min");
+                    Integer max = plugin.getConfig().getInt("range.max");
+                    Integer min = plugin.getConfig().getInt("range.min");
 
 
                     // TODO: ACTUALLY GET THIS VALUES FROM A CONFIG FILE
-                    int x = random.nextInt(Max - Min + Min);
+                    int x = random.nextInt(max - min + min);
                     int y = 150;
-                    int z = random.nextInt(Max - Min + Min);
+                    int z = random.nextInt(max - min + min);
 
                     boolean isLandMass = false;
                     while (!isLandMass) {
