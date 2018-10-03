@@ -45,8 +45,8 @@ public class Wild implements CommandExecutor {
 
                     Location destination = null;
 
-                    Integer max = plugin.getConfig().getInt("range.max");
-                    Integer min = plugin.getConfig().getInt("range.min");
+                    int max = plugin.getConfig().getInt("range.max");
+                    int min = plugin.getConfig().getInt("range.min");
 
 
                     // TODO: ACTUALLY GET THIS VALUES FROM A CONFIG FILE
