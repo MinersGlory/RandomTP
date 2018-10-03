@@ -18,7 +18,6 @@ public class Wild implements CommandExecutor {
     public Permission permission = new Permission("wild");
 
     public HashMap<String, Long> cooldowns = new HashMap<String, Long>();
-    public long timeleft;
     // TODO: ACTUALLY GET THIS VALUE FROM A CONFIG FILE
     int cooldownDuration = 60;
     public long cooldowntime = cooldownDuration * 1000;
@@ -35,10 +34,6 @@ public class Wild implements CommandExecutor {
             String Sender = player.getName();
 
             if (player.hasPermission("wild.use")) {
-
-                if (this.cooldowns.containsKey(Sender) && System.currentTimeMillis() - cooldowns.get(Sender) <= cooldowntime) {
-                    player.sendMessage(ChatColor.GRAY + "Please wait another " + Math.round((System.currentTimeMillis() - cooldowns.get(Sender)) / 1000) + ChatColor.GRAY + " seconds before trying again.");
-                } else {
                     Location originalLocation = player.getLocation();
 
                     Random random = new Random();
@@ -67,9 +62,6 @@ public class Wild implements CommandExecutor {
 
                     player.sendMessage(ChatColor.GREEN + "You have been teleported " + (int) destination.distance(originalLocation) + " blocks away!");
 
-
-                    cooldowns.put(Sender, System.currentTimeMillis());
-                }
 
             } else {
                 player.sendMessage(ChatColor.DARK_RED + "You don't have permission to use this command!");
