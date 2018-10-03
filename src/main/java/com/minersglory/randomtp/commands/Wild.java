@@ -22,7 +22,7 @@ public class Wild implements CommandExecutor {
     int cooldownDuration = 60;
     public long cooldowntime = cooldownDuration * 1000;
 
-    public RandomTP plugin = new RandomTP();
+    private RandomTP plugin;
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
