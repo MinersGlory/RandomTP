@@ -13,13 +13,13 @@ public class RandomTP extends JavaPlugin {
 
     public void onEnable() {
         if (config.exists()) {
-            // Do nothing
+            logger.info("RandomTP has been enabled.");
+            this.getCommand("wild").setExecutor(new Wild());
         } else {
             // Create config
             this.saveDefaultConfig();
+            logger.info("Generated default config.yml");
         }
-        logger.info("RandomTP has been enabled.");
-        this.getCommand("wild").setExecutor(new Wild());
     }
 
     public void onDisable() {
