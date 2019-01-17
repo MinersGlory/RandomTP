@@ -16,7 +16,8 @@ import java.util.Random;
 
 public class Wild implements CommandExecutor {
 
-    public RandomTP plugin;
+    private RandomTP plugin;
+
 
     public Permission permission = new Permission("wild");
     public long timeleft;
@@ -74,7 +75,7 @@ public class Wild implements CommandExecutor {
                     }
                     player.teleport(new Location(player.getWorld(), destination.getX(), destination.getY() + 1.0D, destination.getZ()));
 
-                    player.sendMessage(ChatColor.GREEN + "You have been teleported " + (int) destination.distance(originalLocation) + " blocks away!");
+                    player.sendMessage(ChatColor.GRAY + "You have been teleported " + (int) destination.distance(originalLocation) + " blocks away!");
 
 
                     cooldowns.put(Sender, System.currentTimeMillis());
@@ -83,8 +84,8 @@ public class Wild implements CommandExecutor {
             } else {
                 player.sendMessage(ChatColor.DARK_RED + "You don't have permission to use this command!");
             }
-            return true;
         }
+        plugin.logger.info("You must be a player to use that command!");
         return false;
     }
 
