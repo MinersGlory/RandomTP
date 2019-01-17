@@ -11,19 +11,21 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 public class Wild implements CommandExecutor {
 
-    public Permission permission = new Permission("wild");
+    public RandomTP plugin;
 
-    public HashMap<String, Long> cooldowns = new HashMap<String, Long>();
+    public Permission permission = new Permission("wild");
     public long timeleft;
+    public HashMap<String, Long> cooldowns = new HashMap<>();
+
     // TODO: ACTUALLY GET THIS VALUE FROM A CONFIG FILE
-    int cooldownDuration = 60;
+    int cooldownDuration = plugin.getConfig().getInt("cooldown");
     public long cooldowntime = cooldownDuration * 1000;
 
-    public RandomTP plugin = new RandomTP();
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -36,20 +38,27 @@ public class Wild implements CommandExecutor {
 
             if (player.hasPermission("wild.use")) {
 
-                if (this.cooldowns.containsKey(Sender) && System.currentTimeMillis() - cooldowns.get(Sender) <= cooldowntime) {
-                    player.sendMessage(ChatColor.GRAY + "Please wait another " + Math.round((System.currentTimeMillis() + cooldowns.get(Sender)) / 1000) + ChatColor.GRAY + " seconds before trying again.");
+                if (this.cooldowns.containsKey(Sender) && System.currentTimeMillis() + cooldowns.get(Sender) <= cooldowntime) {
+                    player.sendMessage(ChatColor.GRAY + "Please wait another " + Math.round((System.currentTimeMillis() - cooldowns.get(Sender)) / 1000) + ChatColor.GRAY + " seconds before trying again.");
                 } else {
                     Location originalLocation = player.getLocation();
+
+                    // Get enabled worlds from config
+                    List<String> active_worlds = plugin.getConfig().getStringList("active-worlds");
+
+                    String currentWorld = player.getWorld().getName();
+                    Location spawnpoint = plugin.getServer().getWorld(currentWorld).getSpawnLocation();
+
 
                     Random random = new Random();
 
                     Location destination = null;
 
+
+                    // Get max and minimum distance from config.yml
                     int max = plugin.getConfig().getInt("range.max");
                     int min = plugin.getConfig().getInt("range.min");
 
-
-                    // TODO: ACTUALLY GET THIS VALUES FROM A CONFIG FILE
                     int x = random.nextInt(max - min + min);
                     int y = 150;
                     int z = random.nextInt(max - min + min);

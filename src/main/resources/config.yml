@@ -1,3 +1,5 @@
 range:
   max: 9999
   min: 100
+active-worlds:
+  - world
