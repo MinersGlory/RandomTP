@@ -23,69 +23,67 @@ public class Wild implements CommandExecutor {
 
 
     public HashMap<String, Long> cooldowns = new HashMap<>();
-    public Permission permission = new Permission("wild");
     public long timeleft;
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-
         Player player = (Player) sender;
         String Sender = player.getName();
 
         int cooldownDuration = plugin.getConfig().getInt("cooldown");
         long cooldowntime = cooldownDuration * 1000;
+        if (cmd.getName().equalsIgnoreCase("wild")) {
+            if (sender instanceof Player) {
+                if (player.hasPermission("wild.use")) {
+                    if (this.cooldowns.containsKey(Sender) && System.currentTimeMillis() + cooldowns.get(Sender) <= cooldowntime) {
+                        player.sendMessage(ChatColor.GRAY + "Please wait another " + Math.round((System.currentTimeMillis() - cooldowns.get(Sender)) / 1000) + ChatColor.GRAY + " seconds before trying again.");
+                    } else {
+                        Location originalLocation = player.getLocation();
 
-        if (sender instanceof Player) {
-            if (player.hasPermission("wild.use")) {
-                if (this.cooldowns.containsKey(Sender) && System.currentTimeMillis() + cooldowns.get(Sender) <= cooldowntime) {
-                    player.sendMessage(ChatColor.GRAY + "Please wait another " + Math.round((System.currentTimeMillis() - cooldowns.get(Sender)) / 1000) + ChatColor.GRAY + " seconds before trying again.");
-                } else {
-                    Location originalLocation = player.getLocation();
+                        // Get enabled worlds from config
+                        List<String> active_worlds = plugin.getConfig().getStringList("active-worlds");
 
-                    // Get enabled worlds from config
-                    List<String> active_worlds = plugin.getConfig().getStringList("active-worlds");
-
-                    String currentWorld = player.getWorld().getName();
-                    Location spawnpoint = plugin.getServer().getWorld(currentWorld).getSpawnLocation();
-
-
-                    Random random = new Random();
-
-                    Location destination = null;
+                        String currentWorld = player.getWorld().getName();
+                        Location spawnpoint = plugin.getServer().getWorld(currentWorld).getSpawnLocation();
 
 
-                    // Get max and minimum distance from config.yml
-                    int max = plugin.getConfig().getInt("range.max");
-                    int min = plugin.getConfig().getInt("range.min");
+                        Random random = new Random();
 
-                    int x = random.nextInt(max - min + min);
-                    int y = 150;
-                    int z = random.nextInt(max - min + min);
+                        Location destination = null;
 
-                    boolean isLandMass = false;
-                    while (!isLandMass) {
-                        destination = new Location(player.getWorld(), x, y, z);
-                        if (destination.getBlock().getType() != Material.AIR) {
-                            isLandMass = true;
-                        } else {
-                            y--;
+
+                        // Get max and minimum distance from config.yml
+                        int max = plugin.getConfig().getInt("range.max");
+                        int min = plugin.getConfig().getInt("range.min");
+
+                        int x = random.nextInt(max - min + min);
+                        int y = 150;
+                        int z = random.nextInt(max - min + min);
+
+                        boolean isLandMass = false;
+                        while (!isLandMass) {
+                            destination = new Location(player.getWorld(), x, y, z);
+                            if (destination.getBlock().getType() != Material.AIR) {
+                                isLandMass = true;
+                            } else {
+                                y--;
+                            }
                         }
+                        player.teleport(new Location(player.getWorld(), destination.getX(), destination.getY() + 1.0D, destination.getZ()));
+
+                        player.sendMessage(ChatColor.GRAY + "You have been teleported " + (int) destination.distance(originalLocation) + " blocks away!");
+
+
+                        cooldowns.put(Sender, System.currentTimeMillis());
                     }
-                    player.teleport(new Location(player.getWorld(), destination.getX(), destination.getY() + 1.0D, destination.getZ()));
 
-                    player.sendMessage(ChatColor.GRAY + "You have been teleported " + (int) destination.distance(originalLocation) + " blocks away!");
-
-
-                    cooldowns.put(Sender, System.currentTimeMillis());
                 }
-
+            } else {
+                plugin.logger.info("You must be a player to use that command!");
+                return false;
             }
-        } else {
-            plugin.logger.info("You must be a player to use that command!");
             return false;
         }
         return false;
-    }
-
-
+        }
 }
