@@ -6,7 +6,7 @@
 
     <groupId>com.minersglory</groupId>
     <artifactId>randomtp</artifactId>
-    <version>1.2</version>
+    <version>1.2-${env.BUILD_NUMBER}</version>
 
     <!-- maven-compiler-plugin -->
     <build>
