@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Wild implements CommandExecutor {
-    private final RandomTP plugin;
+    public final RandomTP plugin;
 
     public Wild(RandomTP plugin) {
         this.plugin = plugin;
@@ -25,14 +25,15 @@ public class Wild implements CommandExecutor {
     public HashMap<String, Long> cooldowns = new HashMap<>();
     public Permission permission = new Permission("wild");
     public long timeleft;
-    int cooldownDuration = plugin.getConfig().getInt("cooldown");
-    public long cooldowntime = cooldownDuration * 1000;
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
         Player player = (Player) sender;
         String Sender = player.getName();
+
+        int cooldownDuration = plugin.getConfig().getInt("cooldown");
+        long cooldowntime = cooldownDuration * 1000;
 
         if (sender instanceof Player) {
             if (player.hasPermission("wild.use")) {
