@@ -4,4 +4,4 @@ version: ${project.version}
 commands:
   wild:
     description: Use /wild to be randomly teleported in the wilderness
-    usage: /<command>
+    usage: /wild
