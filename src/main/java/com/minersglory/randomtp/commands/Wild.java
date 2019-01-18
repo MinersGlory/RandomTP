@@ -15,7 +15,11 @@ import java.util.List;
 import java.util.Random;
 
 public class Wild implements CommandExecutor {
-    private RandomTP plugin;
+    private final RandomTP plugin;
+
+    public Wild(RandomTP plugin) {
+        this.plugin = plugin;
+    }
 
 
     public HashMap<String, Long> cooldowns = new HashMap<>();

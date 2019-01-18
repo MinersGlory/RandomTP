@@ -7,6 +7,8 @@ import java.io.File;
 
 public class RandomTP extends JavaPlugin {
 
+    private Wild commands;
+
     public final Logger logger = getLogger();
 
     File config = new File(this.getDataFolder(), "config.yml");
@@ -14,7 +16,7 @@ public class RandomTP extends JavaPlugin {
     public void onEnable() {
         if (config.exists()) {
             logger.info("RandomTP has been enabled.");
-            this.getCommand("wild").setExecutor(new Wild());
+            this.commands = new Wild(this);
         } else {
             // Create config
             this.saveDefaultConfig();
