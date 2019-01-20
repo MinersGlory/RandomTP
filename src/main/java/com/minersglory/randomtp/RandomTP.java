@@ -8,7 +8,7 @@ import java.io.File;
 
 public class RandomTP extends JavaPlugin {
 
-    public static RandomTP instance;
+    public static RandomTP plugin;
 
     PluginCommand wildCmd = getCommand("wild");
 
@@ -16,8 +16,9 @@ public class RandomTP extends JavaPlugin {
 
     File config = new File(this.getDataFolder(), "config.yml");
 
+    @Override
     public void onEnable() {
-        instance = this;
+        plugin = this;
         if (config.exists()) {
             logger.info("RandomTP has been enabled.");
 
@@ -30,18 +31,21 @@ public class RandomTP extends JavaPlugin {
         }
     }
 
+    @Override
+    public void onDisable() {
+        logger.info("RandomTP has been disabled.");
+        plugin = null;
+    }
+
     /**
      * Get an instance of the main RandomTP class
      *
      * @return an instance of the RandoMTP class
      */
     public static RandomTP getPlugin() {
-        return instance;
+        return plugin;
     }
 
-    public void onDisable() {
-        logger.info("RandomTP has been disabled.");
-    }
 
 }
 
