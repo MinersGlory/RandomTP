@@ -1,3 +1,4 @@
+cooldown: 60
 range:
   max: 9999
   min: 100

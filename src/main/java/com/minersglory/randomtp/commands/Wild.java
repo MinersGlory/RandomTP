@@ -15,12 +15,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-public class Wild implements CommandExecutor {
-    public final RandomTP plugin;
+import static com.minersglory.randomtp.RandomTP.plugin;
 
-    public Wild(RandomTP plugin) {
+public class Wild implements CommandExecutor {
+    /*public final RandomTP plugin;*/
+
+    /*public Wild(RandomTP plugin) {
         this.plugin = plugin;
-    }
+    }*/
 
 
     public HashMap<String, Long> cooldowns = new HashMap<>();
@@ -31,10 +33,10 @@ public class Wild implements CommandExecutor {
         Player player = (Player) sender;
         String Sender = player.getName();
 
-        int cooldownDuration = plugin.getConfig().getInt("cooldown");
+        int cooldownDuration = RandomTP.getValues().getInt("cooldown");
         long cooldowntime = cooldownDuration * 1000;
-        if (cmd.getName().equalsIgnoreCase("wild")) {
-            if (sender instanceof Player) {
+        if (sender instanceof Player) {
+            if (cmd.getName().equalsIgnoreCase("wild")) {
                 if (player.hasPermission("wild.use")) {
                     if (this.cooldowns.containsKey(Sender) && System.currentTimeMillis() + cooldowns.get(Sender) <= cooldowntime) {
                         player.sendMessage(ChatColor.GRAY + "Please wait another " + Math.round((System.currentTimeMillis() - cooldowns.get(Sender)) / 1000) + ChatColor.GRAY + " seconds before trying again.");
@@ -42,7 +44,7 @@ public class Wild implements CommandExecutor {
                         Location originalLocation = player.getLocation();
 
                         // Get enabled worlds from config
-                        List<String> active_worlds = plugin.getConfig().getStringList("active-worlds");
+                        List<String> active_worlds = RandomTP.getValues().getStringList("active-worlds");
 
                         String currentWorld = player.getWorld().getName();
                         Location spawnpoint = plugin.getServer().getWorld(currentWorld).getSpawnLocation();
@@ -54,8 +56,8 @@ public class Wild implements CommandExecutor {
 
 
                         // Get max and minimum distance from config.yml
-                        int max = plugin.getConfig().getInt("range.max");
-                        int min = plugin.getConfig().getInt("range.min");
+                        int max = RandomTP.getValues().getInt("range.max");
+                        int min = RandomTP.getValues().getInt("range.min");
 
                         int x = random.nextInt(max - min + min);
                         int y = 150;
@@ -78,13 +80,12 @@ public class Wild implements CommandExecutor {
                         cooldowns.put(Sender, System.currentTimeMillis());
                     }
 
+                } else {
+                    plugin.logger.info(ChatColor.RED + "You have no permission!");
                 }
-            } else {
-                plugin.logger.info("You must be a player to use that command!");
-                return false;
             }
-            return false;
         }
+        plugin.logger.info("You must be a player to use that command!");
         return false;
         }
 }

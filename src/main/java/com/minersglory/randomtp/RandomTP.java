@@ -1,40 +1,40 @@
 package com.minersglory.randomtp;
 
 import com.minersglory.randomtp.commands.Wild;
+import com.minersglory.randomtp.util.Config;
+import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.util.logging.Logger;
-import java.io.File;
 
 public class RandomTP extends JavaPlugin {
-
     public static RandomTP plugin;
+    public static final Logger logger = Logger.getLogger("Minecraft");
 
-    PluginCommand wildCmd = getCommand("wild");
+    private static FileConfiguration values;
 
-    public final Logger logger = getLogger();
-
-    File config = new File(this.getDataFolder(), "config.yml");
 
     @Override
     public void onEnable() {
         plugin = this;
-        if (config.exists()) {
-            logger.info("RandomTP has been enabled.");
+        logger.info(ChatColor.GREEN + "RandomTP has been enabled.");
+        Config.generateDefaults();
+        logger.info(ChatColor.GRAY + "Generated config.yml");
+        this.saveConfig();
 
-            // Register commands
-            wildCmd.setExecutor(new Wild(this));
-        } else {
-            // Create config
-            this.saveDefaultConfig();
-            logger.info("Generated default config.yml");
-        }
+
+        // Register commands
+        getCommand("wild").setExecutor(new Wild());
+        logger.info(ChatColor.GREEN + "Registered listeners");
+
     }
 
     @Override
     public void onDisable() {
-        logger.info("RandomTP has been disabled.");
+        saveConfig();
         plugin = null;
+        logger.info("RandomTP has been disabled.");
     }
 
     /**
@@ -46,6 +46,13 @@ public class RandomTP extends JavaPlugin {
         return plugin;
     }
 
+    public static FileConfiguration getValues() {
+        return values;
+    }
+
+    public static void setValues(FileConfiguration values) {
+        RandomTP.values = values;
+    }
 
 }
 
