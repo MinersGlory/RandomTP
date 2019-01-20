@@ -16,6 +16,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import static com.minersglory.randomtp.RandomTP.plugin;
 
@@ -40,76 +41,79 @@ public class Wild implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+
+        if (!cmd.getName().equalsIgnoreCase("wild")) {
+            return true;
+        }
+
+        if(!(sender instanceof Player)) {
+            plugin.logger.info(ChatColor.GRAY + "You must be a player to use that command!");
+            return true;
+        }
+
+
         Player player = (Player) sender;
         String Sender = player.getName();
-        int timeLeft = cooldownHandler.getCooldown(player.getUniqueId());
-        int cooldownDuration = plugin.getConfig().getInt("cooldown");
 
-        if (sender instanceof Player) {
-            if (cmd.getName().equalsIgnoreCase("wild")) {
-                if (player.hasPermission("wild.use")) {
-                    if(timeLeft == 0){
-                        cooldownHandler.setCooldown(player.getUniqueId(), CooldownHandler.DEFAULT_COOLDOWN);
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
+        if(!(player.hasPermission("wild.use"))) {
+            player.sendMessage(ChatColor.RED + "Insufficient permissions!");
+            return true;
+        }
+
+        if (args.length > 0) {
+            player.sendMessage(ChatColor.GRAY + "Invalid command syntax! " +  ChatColor.DARK_GREEN + "Usage: /wild");
+            return true;
+        }
+
+        CooldownHandler cooldown = CooldownHandler.getCooldown(player);
+        if(!cooldown.check(player) && (cooldown.getTimeLeft(player) * -1) >= 1) {
+            player.sendMessage("Please wait " + (cooldown.getTimeLeft(player) * -1) + " seconds to use this again!");
+            return true;
+        } else if ((cooldown.getTimeLeft(player) * -1) == 0) {
+            player.sendMessage(ChatColor.GREEN + "You can teleport again!");
+            cooldown.finalize();
+        } else {
+            player.sendMessage(ChatColor.GREEN + "You can teleport again!");
+            cooldown.finalize();
+        }
+
+        Location originalLocation = player.getLocation();
+
+        // Get enabled worlds from config
+                        List<String> active_worlds = plugin.getConfig().getStringList("active-worlds");
+
+                        String currentWorld = player.getWorld().getName();
+                        Location spawnpoint = plugin.getServer().getWorld(currentWorld).getSpawnLocation();
 
 
-                                Location originalLocation = player.getLocation();
+                        Random random = new Random();
 
-                                // Get enabled worlds from config
-                                List<String> active_worlds = plugin.getConfig().getStringList("active-worlds");
-
-                                String currentWorld = player.getWorld().getName();
-                                Location spawnpoint = plugin.getServer().getWorld(currentWorld).getSpawnLocation();
+                        Location destination = null;
 
 
-                                Random random = new Random();
+                        // Get max and minimum distance from config.yml
+                        int max = plugin.getConfig().getInt("range.max");
+                        int min = plugin.getConfig().getInt("range.min");
 
-                                Location destination = null;
+                        int x = random.nextInt(max - min + min);
+                        int y = 150;
+                        int z = random.nextInt(max - min + min);
 
-
-                                // Get max and minimum distance from config.yml
-                                int max = plugin.getConfig().getInt("range.max");
-                                int min = plugin.getConfig().getInt("range.min");
-
-                                int x = random.nextInt(max - min + min);
-                                int y = 150;
-                                int z = random.nextInt(max - min + min);
-
-                                boolean isLandMass = false;
-                                while (!isLandMass) {
-                                    destination = new Location(player.getWorld(), x, y, z);
-                                    if (destination.getBlock().getType() != Material.AIR) {
-                                        isLandMass = true;
-                                    } else {
-                                        y--;
-                                    }
-                                }
-                                player.teleport(new Location(player.getWorld(), destination.getX(), destination.getY() + 1.0D, destination.getZ()));
-
-                                player.sendMessage(ChatColor.GRAY + "You have been teleported " + (int) destination.distance(originalLocation) + " blocks away!");
-
-                                // Set the timer countdown
-                                int timeLeft = cooldownHandler.getCooldown(player.getUniqueId());
-                                cooldownHandler.setCooldown(player.getUniqueId(), --timeLeft);
-                                if(timeLeft == 0){
-                                    this.cancel();
-                                }
+                        boolean isLandMass = false;
+                        while (!isLandMass) {
+                            destination = new Location(player.getWorld(), x, y, z);
+                            if (destination.getBlock().getType() != Material.AIR) {
+                                isLandMass = true;
+                            } else {
+                                y--;
                             }
-                        }.runTaskTimer(plugin, 20, 20);
+                        }
+                        player.teleport(new Location(player.getWorld(), destination.getX(), destination.getY() + 1.0D, destination.getZ()));
 
-                    } else {
-                        player.sendMessage(ChatColor.GRAY + "Please wait another " + ChatColor.RED.toString() + timeLeft + ChatColor.GRAY + " seconds before trying again.");
-                    }
-
-
-                } else {
-                    plugin.logger.info(ChatColor.RED + "You have no permission!");
+                        player.sendMessage(ChatColor.GRAY + "You have been teleported " + (int) destination.distance(originalLocation) + " blocks away!");
+                        return true;
                 }
-            }
+
+
         }
-        plugin.logger.info("You must be a player to use that command!");
-        return false;
-        }
-}
+
