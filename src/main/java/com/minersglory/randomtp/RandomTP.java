@@ -6,27 +6,33 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
 import java.util.logging.Logger;
 
 public class RandomTP extends JavaPlugin {
     public static RandomTP plugin;
     public static final Logger logger = Logger.getLogger("Minecraft");
 
+    File configFile = new File(this.getDataFolder(), "config.yml");
     private static FileConfiguration values;
 
 
     @Override
     public void onEnable() {
         plugin = this;
-        logger.info(ChatColor.GREEN + "RandomTP has been enabled.");
-        Config.generateDefaults();
-        logger.info(ChatColor.GRAY + "Generated config.yml");
-        this.saveConfig();
+        if (configFile.exists()) {
+            // Register commands
+            getCommand("wild").setExecutor(new Wild());
+            logger.info(ChatColor.GREEN + "Registered listeners");
+            logger.info(ChatColor.GREEN + "RandomTP has been enabled.");
+        } else {
+            this.saveDefaultConfig();
+            logger.info(ChatColor.GRAY + "Generated config.yml");
+            this.saveConfig();
+        }
 
 
-        // Register commands
-        getCommand("wild").setExecutor(new Wild());
-        logger.info(ChatColor.GREEN + "Registered listeners");
 
     }
 
