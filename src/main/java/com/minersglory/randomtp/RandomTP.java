@@ -29,7 +29,7 @@ public class RandomTP extends JavaPlugin {
         } else {
             this.saveDefaultConfig();
             logger.info(ChatColor.GRAY + "Generated config.yml");
-            this.saveConfig();
+            this.reloadConfig();
         }
 
 

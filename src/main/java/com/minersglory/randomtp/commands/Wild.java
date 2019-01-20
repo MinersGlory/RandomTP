@@ -33,7 +33,7 @@ public class Wild implements CommandExecutor {
         Player player = (Player) sender;
         String Sender = player.getName();
 
-        int cooldownDuration = RandomTP.getValues().getInt("cooldown");
+        int cooldownDuration = plugin.getConfig().getInt("cooldown");
         long cooldowntime = cooldownDuration * 1000;
         if (sender instanceof Player) {
             if (cmd.getName().equalsIgnoreCase("wild")) {
@@ -44,7 +44,7 @@ public class Wild implements CommandExecutor {
                         Location originalLocation = player.getLocation();
 
                         // Get enabled worlds from config
-                        List<String> active_worlds = RandomTP.getValues().getStringList("active-worlds");
+                        List<String> active_worlds = plugin.getConfig().getStringList("active-worlds");
 
                         String currentWorld = player.getWorld().getName();
                         Location spawnpoint = plugin.getServer().getWorld(currentWorld).getSpawnLocation();
@@ -56,8 +56,8 @@ public class Wild implements CommandExecutor {
 
 
                         // Get max and minimum distance from config.yml
-                        int max = RandomTP.getValues().getInt("range.max");
-                        int min = RandomTP.getValues().getInt("range.min");
+                        int max = plugin.getConfig().getInt("range.max");
+                        int min = plugin.getConfig().getInt("range.min");
 
                         int x = random.nextInt(max - min + min);
                         int y = 150;

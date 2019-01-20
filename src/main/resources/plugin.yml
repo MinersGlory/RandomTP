@@ -4,3 +4,7 @@ version: ${project.version}
 commands:
   wild:
     description: Use /wild to be randomly teleported in the wilderness
+permissions:
+  wild.use:
+    description: Allows /wild
+    default: op
